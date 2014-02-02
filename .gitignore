@@ -1,0 +1,11 @@
+# ignore build artifacts:
+*/target/
+*/.settings/
+*/bin/
+/target
+.settings
+.idea
+.classpath
+.project
+TODO.txt
+
