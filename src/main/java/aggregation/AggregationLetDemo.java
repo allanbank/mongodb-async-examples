@@ -16,13 +16,15 @@
 
 package aggregation;
 
-import static com.allanbank.mongodb.bson.builder.BuilderFactory.a;
 import static com.allanbank.mongodb.bson.builder.BuilderFactory.d;
 import static com.allanbank.mongodb.bson.builder.BuilderFactory.e;
 import static com.allanbank.mongodb.builder.AggregationProjectFields.include;
 import static com.allanbank.mongodb.builder.expression.Expressions.add;
+import static com.allanbank.mongodb.builder.expression.Expressions.cond;
 import static com.allanbank.mongodb.builder.expression.Expressions.constant;
-import static com.allanbank.mongodb.builder.expression.Expressions.map;
+import static com.allanbank.mongodb.builder.expression.Expressions.field;
+import static com.allanbank.mongodb.builder.expression.Expressions.let;
+import static com.allanbank.mongodb.builder.expression.Expressions.multiply;
 import static com.allanbank.mongodb.builder.expression.Expressions.set;
 import static com.allanbank.mongodb.builder.expression.Expressions.var;
 
@@ -38,16 +40,16 @@ import com.allanbank.mongodb.builder.Find;
 
 /**
  * AggregationMapDemo provides a simple example of using the aggregation
- * framework with a {@code $map} expression.
+ * framework with a {@code $let} expression.
  * <p>
  * Inspired by the <a href=
- * "http://docs.mongodb.org/master/reference/operator/aggregation/map/">
- * <code>map</code> expression's documentation</a>.
+ * "http://docs.mongodb.org/master/reference/operator/aggregation/let/">
+ * <code>let</code> expression's documentation</a>.
  * </p>
  * 
  * @copyright 2014, Allanbank Consulting, Inc., All Rights Reserved
  */
-public class AggregationMapDemo {
+public class AggregationLetDemo {
     /**
      * The handle to the MongoDB client. We assume MongoDB is running on your
      * machine on the default port of 27017.
@@ -74,63 +76,95 @@ public class AggregationMapDemo {
         /**
          * <pre>
          * <code>
-         * Inserted : {
-         *   '_id' : 0,
-         *   skews : [
-         *     1, 
-         *     1, 
-         *     2, 
-         *     3, 
-         *     5, 
-         *     8
-         *   ]
+         * Inserted : 
+         * {
+         *   '_id' : 1,
+         *   price : 10,
+         *   tax : 0.5,
+         *   applyDiscount : true
+         * }
+         * {
+         *   '_id' : 2,
+         *   price : 10,
+         *   tax : 0.25,
+         *   applyDiscount : false
          * }
          * </code>
          * </pre>
          */
-        final DocumentBuilder inserted = d(e("_id", 0),
-                e("skews", a(1, 1, 2, 3, 5, 8)));
+        // { _id: 1, price: 10, tax: 0.50, applyDiscount: true }
+        // { _id: 2, price: 10, tax: 0.25, applyDiscount: false }
+        DocumentBuilder inserted = d(e("_id", 1), e("price", 10),
+                e("tax", 0.50), e("applyDiscount", true));
         theCollection.insert(inserted);
+        inserted = d(e("_id", 2), e("price", 10), e("tax", 0.25),
+                e("applyDiscount", false));
+        theCollection.insert(inserted);
+        System.out.println("Inserted : ");
         for (final Document doc : theCollection.find(Find.ALL)) {
-            System.out.println("Inserted : " + doc);
+            System.out.println(doc);
         }
 
         /**
          * <pre>
          * <code>
-         * { $project: { adjustments: { $map: { input: "$skews",
-         *                            as: "adj",
-         *                            in: { $add: [ "$$adj", 12 ] } } } } }
+         *   $project: {
+         *      finalTotal: {
+         *         $let: {
+         *            vars: {
+         *               total: { $add: [ '$price', '$tax' ] },
+         *               discounted: { $cond: { if: '$applyDiscount', then: 0.9, else: 1 } }
+         *            },
+         *            in: { $multiply: [ "$$total", "$$discounted" ] }
+         *         }
+         *      }
+         *   }
          * </code>
          * </pre>
          */
         final Aggregate.Builder aggregation = Aggregate.builder();
         aggregation.project(
                 include(),
-                set("adjustments",
-                        map("skews").as("adj")
-                        .in(add(var("adj"), constant(12)))));
+                set("finalTotal",
+                        let("total", add(field("price"), field("tax"))).let(
+                                "discounted",
+                                cond(field("applyDiscount"), constant(0.9),
+                                        constant(1))).in(
+                                                multiply(var("total"), var("discounted")))));
 
         /**
          * <pre>
          * <code>
          * Aggregation Pipeline : '$pipeline' : [
-         *    {
-         *       '$project' : {
-         *          adjustments : {
-         *             '$map' {
-         *                input : '$skews',
-         *                as : 'adj',
-         *                in : {
-         *                   '$add' : [
-         *                      '$$adj',
-         *                      12
-         *                   ]
-         *                }
+         *   {
+         *     '$project' : {
+         *       finalTotal : {
+         *         '$let' : {
+         *           vars : {
+         *             total : {
+         *               '$add' : [
+         *                 '$price', 
+         *                 '$tax'
+         *               ]
+         *             },
+         *             discounted : {
+         *               '$cond' : [
+         *                 '$applyDiscount', 
+         *                 0.9, 
+         *                 1
+         *               ]
          *             }
-         *          }
+         *           },
+         *           in : {
+         *             '$multiply' : [
+         *               '$$total', 
+         *               '$$discounted'
+         *             ]
+         *           }
+         *         }
          *       }
-         *    }
+         *     }
+         *   }
          * ]
          * </code>
          * </pre>
@@ -140,22 +174,21 @@ public class AggregationMapDemo {
         /**
          * <pre>
          * <code>
-         * Results  : {
-         *   '_id' : 0,
-         *   adjustments : [
-         *     13, 
-         *     13, 
-         *     14, 
-         *     15, 
-         *     17, 
-         *     20
-         *   ]
+         * Results  : 
+         * {
+         *   '_id' : 1,
+         *   finalTotal : 9.450000000000001
+         * }
+         * {
+         *   '_id' : 2,
+         *   finalTotal : 10.25
          * }
          * </code>
          * </pre>
          */
+        System.out.println("Results  : ");
         for (final Document doc : theCollection.aggregate(aggregation)) {
-            System.out.println("Results  : " + doc);
+            System.out.println(doc);
         }
 
         // Always remember to close your client!
