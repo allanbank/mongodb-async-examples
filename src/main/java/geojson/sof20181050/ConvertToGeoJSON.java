@@ -136,7 +136,7 @@ public class ConvertToGeoJSON {
      *             On a failure to close the client.
      */
     public static void main(final String[] args) throws InterruptedException,
-            IOException {
+    IOException {
         try {
             // We can perform this operation two way. Synchronously and via
             // streaming. We will provide an example of both. Change these
@@ -276,7 +276,7 @@ public class ConvertToGeoJSON {
                 new MongoClientURI(URI));
         final com.mongodb.DBCollection legacyCollection = legacyClient.getDB(
                 theCollection.getDatabaseName()).getCollection(
-                theCollection.getName());
+                        theCollection.getName());
         try {
             int count = 0;
             for (final DBObject doc : legacyCollection.find()) {
@@ -296,7 +296,7 @@ public class ConvertToGeoJSON {
                 final BasicDBObject update = new BasicDBObject("$set", set);
 
                 legacyCollection.update(query, update, /* upsert= */false,
-                /* multi= */false, WriteConcern.ACKNOWLEDGED);
+                        /* multi= */false, WriteConcern.ACKNOWLEDGED);
 
                 count += 1;
             }

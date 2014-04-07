@@ -104,17 +104,17 @@ import com.allanbank.mongodb.builder.Aggregate;
  */
 public class SumIfExists {
     /**
-     * A source of no so random values. Use a fixed seed to always get the same
-     * values for fields.
-     */
-    private final static Random random = new Random(123456789L);
-
-    /**
      * The handle to the MongoDB client. We assume MongoDB is running on your
      * machine on the default port of 27017.
      */
     private final static MongoClient client = MongoFactory
             .createClient("mongodb://localhost:27017/");
+
+    /**
+     * A source of no so random values. Use a fixed seed to always get the same
+     * values for fields.
+     */
+    private final static Random random = new Random(123456789L);
 
     /** The collection we will be using. */
     private final static MongoCollection theCollection = client.getDatabase(
@@ -128,15 +128,15 @@ public class SumIfExists {
      * @throws IOException
      *             On a failure closing the MongoClient.
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(final String[] args) throws IOException {
         // Build the aggregation document/command.
-        Aggregate.Builder builder = Aggregate.builder();
+        final Aggregate.Builder builder = Aggregate.builder();
 
         // From the StackOverflow Question.
-        String fieldName = "myfieldname";
+        final String fieldName = "myfieldname";
 
         // A token ObjectId to use in comparisons for the null field.
-        ObjectId nullToken = new ObjectId();
+        final ObjectId nullToken = new ObjectId();
 
         builder.project(
                 include("a", "b", "c", "etc"),
@@ -151,11 +151,11 @@ public class SumIfExists {
         // Insert some documents to test with.
         theCollection.delete(ALL);
         for (int i = 0; i < 99; ++i) {
-            DocumentBuilder doc = BuilderFactory.start();
-            if (i % 3 == 0) {
+            final DocumentBuilder doc = BuilderFactory.start();
+            if ((i % 3) == 0) {
                 doc.addNull(fieldName);
             }
-            else if (i % 3 == 1) {
+            else if ((i % 3) == 1) {
                 doc.add(fieldName, random.nextDouble());
             }
             // else if (i % 3 == 2) -- Field does not exist.

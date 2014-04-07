@@ -19,15 +19,13 @@ package java8;
 import static com.allanbank.mongodb.builder.QueryBuilder.where;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 
 import com.allanbank.mongodb.BatchedAsyncMongoCollection;
 import com.allanbank.mongodb.MongoClient;
 import com.allanbank.mongodb.MongoCollection;
 import com.allanbank.mongodb.MongoFactory;
-import com.allanbank.mongodb.bson.Document;
 import com.allanbank.mongodb.bson.builder.BuilderFactory;
 import com.allanbank.mongodb.bson.builder.DocumentBuilder;
 import com.allanbank.mongodb.builder.Find;
@@ -76,8 +74,8 @@ public class BatchDemo {
      * @throws InterruptedException
      *             On a failure waiting for a future.
      */
-    public static void main(String[] args) throws IOException,
-            InterruptedException, ExecutionException {
+    public static void main(final String[] args) throws IOException,
+    InterruptedException, ExecutionException {
         // Before we start lets make sure there is not already a document.
         theCollection.delete(Find.ALL);
 
@@ -85,7 +83,7 @@ public class BatchDemo {
         // interface which we get from the startBatch() method. The batch needs
         // to always be closed to submit the requests so we use a
         // try-with-resources.
-        CountDownLatch latch = new CountDownLatch(1);
+        final CountDownLatch latch = new CountDownLatch(1);
         try (BatchedAsyncMongoCollection batch = theCollection.startBatch()) {
 
             // Now we can do as many CRUD operations we want. Even commands like
@@ -93,28 +91,28 @@ public class BatchDemo {
 
             // We need some data. Lets create a documents with the _id field 'a'
             // thru 'z'.
-            DocumentBuilder builder = BuilderFactory.start();
+            final DocumentBuilder builder = BuilderFactory.start();
             for (char c = 'a'; c <= 'z'; ++c) {
                 builder.reset().add("_id", String.valueOf(c));
 
                 // Lambda is called once the batch completes.
-                batch.insertAsync( (e, count) -> {}, builder);
+                batch.insertAsync((e, count) -> {
+                }, builder);
             }
 
             // A query works.
-            Find.Builder find = Find.builder();
+            final Find.Builder find = Find.builder();
             find.query(where("_id").equals("a"));
-            batch.findOneAsync( (e, found) -> {
+            batch.findOneAsync((e, found) -> {
                 System.out.println("Find 'a': ");
                 System.out.println("  " + found);
             }, find);
 
             // An update too.
-            DocumentBuilder updateDoc = BuilderFactory.start();
+            final DocumentBuilder updateDoc = BuilderFactory.start();
             updateDoc.push("$set").add("marked", true);
             batch.updateAsync((e, updated) -> {
-                System.out.println("Update all of the documents: "
-                        + updated);
+                System.out.println("Update all of the documents: " + updated);
             }, Find.ALL, updateDoc, true, false);
 
             // Delete should work.
@@ -124,8 +122,7 @@ public class BatchDemo {
 
             // Commands... It is all there.
             batch.countAsync((e, count) -> {
-                System.out.println("Count all documents: "
-                        + count);
+                System.out.println("Count all documents: " + count);
             }, Find.ALL);
 
             // Lets look at the 'a' doc one more time. It should have the
@@ -144,7 +141,6 @@ public class BatchDemo {
             // server).
 
         } // Send the batch.
-
 
         /**
          * Should produce output like:

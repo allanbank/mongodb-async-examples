@@ -55,19 +55,19 @@ public class SecondaryQueryDemo {
      *            controls the number of milliseconds between requests. Defaults
      *            to 0.1 seconds.
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
 
         long sleep = 100;
         if (args.length > 0) {
             sleep = Long.parseLong(args[1]);
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat(
+        final SimpleDateFormat sdf = new SimpleDateFormat(
                 "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        MongoClient client = MongoFactory.createClient(URI);
-        MongoClientConfiguration config = client.getConfig();
+        final MongoClient client = MongoFactory.createClient(URI);
+        final MongoClientConfiguration config = client.getConfig();
 
         // Set closing idle connections to 5 minutes
         // (5, 1 minute read timeouts in a row).
@@ -77,9 +77,9 @@ public class SecondaryQueryDemo {
         config.setMaxConnectionCount(5);
         config.setMinConnectionCount(1);
 
-        MongoDatabase db = client.getDatabase("testdb");
-        MongoCollection collection = db.getCollection("sync_demo");
-        for (Document doc : collection.find(Find.ALL)) {
+        final MongoDatabase db = client.getDatabase("testdb");
+        final MongoCollection collection = db.getCollection("sync_demo");
+        for (final Document doc : collection.find(Find.ALL)) {
             System.out.println(doc);
         }
 
@@ -88,13 +88,13 @@ public class SecondaryQueryDemo {
         // exceptions when the primary steps down and closes the active
         // connections. We also will see pauses due to the driver trying
         // to reconnect to the primary.
-        Find query = Find.builder().query(where("_id").equals(ID))
+        final Find query = Find.builder().query(where("_id").equals(ID))
                 .readPreference(ReadPreference.PREFER_SECONDARY).build();
         Document lastDocument = null;
         int count = 0;
         while (true) {
             try {
-                Document document = collection.findOne(query);
+                final Document document = collection.findOne(query);
 
                 // Print dots if the document does not change. The whole
                 // document if it does.
@@ -112,12 +112,12 @@ public class SecondaryQueryDemo {
                         System.out.println();
                     }
                     System.out
-                            .println(sdf.format(new Date()) + ": " + document);
+                    .println(sdf.format(new Date()) + ": " + document);
                     count = 0;
                 }
                 TimeUnit.MILLISECONDS.sleep(sleep);
             }
-            catch (MongoDbException error) {
+            catch (final MongoDbException error) {
                 System.out.println();
                 System.out.println(error.getClass().getSimpleName() + ": "
                         + error.getMessage());
@@ -125,7 +125,7 @@ public class SecondaryQueryDemo {
                 // Note: There is no sleep here. The driver will block the
                 // caller until the reconnect is finished.
             }
-            catch (InterruptedException e) {
+            catch (final InterruptedException e) {
                 System.out.println();
                 System.out.println("Woke up early!");
             }

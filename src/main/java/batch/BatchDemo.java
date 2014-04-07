@@ -79,8 +79,8 @@ public class BatchDemo {
      * @throws InterruptedException
      *             On a failure waiting for a future.
      */
-    public static void main(String[] args) throws IOException,
-            InterruptedException, ExecutionException {
+    public static void main(final String[] args) throws IOException,
+    InterruptedException, ExecutionException {
         // Before we start lets make sure there is not already a document.
         theCollection.delete(Find.ALL);
 
@@ -89,7 +89,7 @@ public class BatchDemo {
         // to always be closed to submit the requests so we use a
         // try-with-resources.
         final long start = System.currentTimeMillis();
-        List<Future<Integer>> insertResults = new ArrayList<>();
+        final List<Future<Integer>> insertResults = new ArrayList<>();
         Future<Document> found = null;
         Future<Long> update = null;
         Future<Long> delete = null;
@@ -102,7 +102,7 @@ public class BatchDemo {
 
             // We need some data. Lets create a documents with the _id field 'a'
             // thru 'z'.
-            DocumentBuilder builder = BuilderFactory.start();
+            final DocumentBuilder builder = BuilderFactory.start();
             for (char c = 'a'; c <= 'z'; ++c) {
                 builder.reset().add("_id", String.valueOf(c));
 
@@ -112,12 +112,12 @@ public class BatchDemo {
             }
 
             // A query works.
-            Find.Builder find = Find.builder();
+            final Find.Builder find = Find.builder();
             find.query(where("_id").equals("a"));
             found = batch.findOneAsync(find);
 
             // An update too.
-            DocumentBuilder updateDoc = BuilderFactory.start();
+            final DocumentBuilder updateDoc = BuilderFactory.start();
             updateDoc.push("$set").add("marked", true);
             update = batch.updateAsync(Find.ALL, updateDoc, true, false);
 
@@ -144,10 +144,10 @@ public class BatchDemo {
                 System.out.println(duration(start)
                         + " - ERROR: The insert was sent to early...");
             }
-            catch (TimeoutException good) {
+            catch (final TimeoutException good) {
                 System.out
-                        .println(duration(start)
-                                + " - Good - Timed out waiting for the first insert, before it was sent.");
+                .println(duration(start)
+                        + " - Good - Timed out waiting for the first insert, before it was sent.");
             }
         } // Send the batch.
 
@@ -155,7 +155,7 @@ public class BatchDemo {
 
         // The inserts...
         System.out.print(duration(start) + " - Inserts: ");
-        for (Future<Integer> insert : insertResults) {
+        for (final Future<Integer> insert : insertResults) {
             // Just checking for an error.
             insert.get();
         }
@@ -214,8 +214,8 @@ public class BatchDemo {
      *            The start time.
      * @return The duration string.
      */
-    private static String duration(long start) {
-        long delta = System.currentTimeMillis() - start;
+    private static String duration(final long start) {
+        final long delta = System.currentTimeMillis() - start;
 
         if (TimeUnit.MILLISECONDS.toMinutes(delta) > 0) {
             return TimeUnit.MILLISECONDS.toMinutes(delta) + " minutes";

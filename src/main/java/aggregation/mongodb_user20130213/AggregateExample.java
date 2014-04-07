@@ -81,9 +81,9 @@ public class AggregateExample {
      * @throws IOException
      *             On a failure closing the MongoClient.
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(final String[] args) throws IOException {
         // db.appModules.aggregate({
-        Aggregate.Builder builder = new Aggregate.Builder();
+        final Aggregate.Builder builder = new Aggregate.Builder();
         // $unwind:"$dataItems"},
         builder.unwind("dataItems");
         // {$match:{"dataItems.version":{$gt:0}}},
@@ -96,8 +96,9 @@ public class AggregateExample {
 
         System.out.println(builder);
 
-        Iterable<Document> docs = theCollection.aggregate(builder.build());
-        for (Document doc : docs) {
+        final Iterable<Document> docs = theCollection
+                .aggregate(builder.build());
+        for (final Document doc : docs) {
             System.out.println(doc);
         }
 

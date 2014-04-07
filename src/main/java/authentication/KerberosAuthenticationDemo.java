@@ -65,11 +65,11 @@ public class KerberosAuthenticationDemo {
      * @throws InterruptedException
      *             On a failure waiting for a future.
      */
-    public static void main(String[] args) throws IOException,
-            InterruptedException, ExecutionException {
+    public static void main(final String[] args) throws IOException,
+    InterruptedException, ExecutionException {
 
         // Update the configuration to authenticate using kerberos.
-        Credential.Builder credential = Credential.builder();
+        final Credential.Builder credential = Credential.builder();
 
         credential.userName("testuser");
         credential.password("testpassword".toCharArray());
@@ -79,11 +79,11 @@ public class KerberosAuthenticationDemo {
         client.getConfig().addCredential(credential);
 
         // Write?
-        ObjectId id = new ObjectId();
+        final ObjectId id = new ObjectId();
         theCollection.insert(BuilderFactory.start().add("_id", id));
 
         // Read?
-        for (Document doc : theCollection.find(Find.ALL)) {
+        for (final Document doc : theCollection.find(Find.ALL)) {
             System.out.println(doc);
         }
 

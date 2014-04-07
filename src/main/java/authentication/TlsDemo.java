@@ -73,36 +73,36 @@ public class TlsDemo {
      * @throws GeneralSecurityException
      *             On a failure setting up the TLS socket factory.
      */
-    public static void main(String[] args) throws IOException,
-            InterruptedException, ExecutionException, GeneralSecurityException {
+    public static void main(final String[] args) throws IOException,
+    InterruptedException, ExecutionException, GeneralSecurityException {
 
-        File keyStore = new File("keystore");
-        File trustStore = new File("trust");
+        final File keyStore = new File("keystore");
+        final File trustStore = new File("trust");
 
-        TlsSocketFactory.Builder socketFactoryBuilder = TlsSocketFactory
+        final TlsSocketFactory.Builder socketFactoryBuilder = TlsSocketFactory
                 .builder()
                 .ciphers(CipherName.AES_CIPHERS)
                 .hostnameVerifier(
                         HttpsURLConnection.getDefaultHostnameVerifier())
-                .keys(keyStore, "JKS", "changeme".toCharArray(),
-                        "changeit".toCharArray())
-                .trustOnly(trustStore, "JKS", "changeme".toCharArray());
+                        .keys(keyStore, "JKS", "changeme".toCharArray(),
+                                "changeit".toCharArray())
+                                .trustOnly(trustStore, "JKS", "changeme".toCharArray());
 
         client.getConfig().setSocketFactory(socketFactoryBuilder.build());
 
         // Update the configuration to authenticate using X.509 client
         // certificates.
-        Credential.Builder credential = Credential.builder()
+        final Credential.Builder credential = Credential.builder()
                 .userName("CN=testuser").x509();
 
         client.getConfig().addCredential(credential);
 
         // Write?
-        ObjectId id = new ObjectId();
+        final ObjectId id = new ObjectId();
         theCollection.insert(BuilderFactory.start().add("_id", id));
 
         // Read?
-        for (Document doc : theCollection.find(Find.ALL)) {
+        for (final Document doc : theCollection.find(Find.ALL)) {
             System.out.println(doc);
         }
 

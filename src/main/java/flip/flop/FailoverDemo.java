@@ -62,7 +62,7 @@ public class FailoverDemo {
      *            controls the number of milliseconds between requests. Defaults
      *            to 2 minutes.
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
 
         // Time between requests. Make this shorter to increase the probability
         // of a request when a fail over happens or during a failover.
@@ -71,12 +71,12 @@ public class FailoverDemo {
             sleep = Long.parseLong(args[1]);
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat(
+        final SimpleDateFormat sdf = new SimpleDateFormat(
                 "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        MongoClient client = MongoFactory.createClient(URI);
-        MongoClientConfiguration config = client.getConfig();
+        final MongoClient client = MongoFactory.createClient(URI);
+        final MongoClientConfiguration config = client.getConfig();
         config.setMaxConnectionCount(5);
         config.setMinConnectionCount(1);
 
@@ -85,24 +85,24 @@ public class FailoverDemo {
         config.setReadTimeout((int) TimeUnit.SECONDS.toMillis(1));
         config.setMaxIdleTickCount(5);
 
-        MongoDatabase db = client.getDatabase("testdb");
-        MongoCollection collection = db.getCollection("sync_demo");
+        final MongoDatabase db = client.getDatabase("testdb");
+        final MongoCollection collection = db.getCollection("sync_demo");
 
-        for (Document doc : collection.find(Find.ALL)) {
+        for (final Document doc : collection.find(Find.ALL)) {
             System.out.println(doc);
         }
         // Look for the document. If it does not exist, create it.
         // If it does exist, increment a counter.
         while (true) {
             try {
-                DocumentBuilder update = BuilderFactory.start();
+                final DocumentBuilder update = BuilderFactory.start();
                 update.push("$inc").add("count", 1);
                 update.push("$set")
-                        .add("driver", "Asynchronous Java Driver")
-                        .add("url",
-                                "http://www.allanbank.com/mongodb-async-driver");
+                .add("driver", "Asynchronous Java Driver")
+                .add("url",
+                        "http://www.allanbank.com/mongodb-async-driver");
 
-                FindAndModify findAndModify = FindAndModify.builder()
+                final FindAndModify findAndModify = FindAndModify.builder()
                         .query(where("_id").equals(ID)).update(update)
                         .returnNew().upsert().build();
 
@@ -118,35 +118,35 @@ public class FailoverDemo {
                 // configured reconnect timeout.
                 // 2) If the request is sent and then a fail-over starts (before
                 // the reply is received) then a MongoDbException is thrown.
-                List<Future<Document>> futures = new ArrayList<>();
-                for (int i = 0; i < config.getMaxConnectionCount() * 3; ++i) {
+                final List<Future<Document>> futures = new ArrayList<>();
+                for (int i = 0; i < (config.getMaxConnectionCount() * 3); ++i) {
                     futures.add(collection.findAndModifyAsync(findAndModify));
                 }
-                for (Future<Document> future : futures) {
-                    Document doc = future.get();
+                for (final Future<Document> future : futures) {
+                    final Document doc = future.get();
                     System.out.println(sdf.format(new Date())
                             + ": Document Updated "
                             + doc.get("count").getValueAsString() + " times!");
                 }
                 TimeUnit.MILLISECONDS.sleep(sleep);
             }
-            catch (MongoDbException error) {
+            catch (final MongoDbException error) {
                 System.out.println(error.getClass().getSimpleName() + ": "
                         + error.getMessage());
                 System.out
-                        .println("Last command might have finished, might not have.");
+                .println("Last command might have finished, might not have.");
 
                 // Note: There is no sleep here. The driver will block the
                 // caller until the reconnect is finished.
             }
-            catch (InterruptedException e) {
+            catch (final InterruptedException e) {
                 System.out.println("Woke up early!");
             }
-            catch (ExecutionException error) {
+            catch (final ExecutionException error) {
                 System.out.println(error.getClass().getSimpleName() + ": "
                         + error.getMessage());
                 System.out
-                        .println("Last command might have finished, might not have.");
+                .println("Last command might have finished, might not have.");
             }
         }
     }

@@ -67,14 +67,14 @@ public class AggregationRedactDemo {
      * @throws InterruptedException
      *             On a failure waiting for a future.
      */
-    public static void main(String[] args) throws IOException,
-            InterruptedException, ExecutionException {
+    public static void main(final String[] args) throws IOException,
+    InterruptedException, ExecutionException {
         // Before we start lets make sure there is not already a document.
         theCollection.delete(Find.ALL);
 
         // We need some data with lots of size to make sure we are over the 16MB
         // limit.
-        DocumentBuilder inserted = d(
+        final DocumentBuilder inserted = d(
                 // Overall security.
                 e("security", a("TS", "SI", "REL")),
                 e("name", "something"),
@@ -89,19 +89,19 @@ public class AggregationRedactDemo {
                                 e("animal", "Lion"))));
 
         theCollection.insert(inserted);
-        for (Document doc : theCollection.find(Find.ALL)) {
+        for (final Document doc : theCollection.find(Find.ALL)) {
             System.out.println("Inserted : " + doc);
         }
 
         // Now we can start retrieving the document with the ECI.
-        Aggregate.Builder aggregation = Aggregate.builder();
+        final Aggregate.Builder aggregation = Aggregate.builder();
         aggregation.redact(
                 setIsSubset(ifNull(field("security"), constant(a())),
                         constant(a("TS", "SI", "REL", "ECI"))),
-                RedactOption.DESCEND, RedactOption.PRUNE);
+                        RedactOption.DESCEND, RedactOption.PRUNE);
         System.out.println("Aggregation Pipeline : " + aggregation);
 
-        for (Document doc : theCollection.aggregate(aggregation)) {
+        for (final Document doc : theCollection.aggregate(aggregation)) {
             System.out.println("All  : " + doc);
         }
 
@@ -109,8 +109,8 @@ public class AggregationRedactDemo {
         aggregation.reset().redact(
                 setIsSubset(ifNull(field("security"), constant(a())),
                         constant(a("TS", "SI", "REL", "OTR"))),
-                RedactOption.DESCEND, RedactOption.PRUNE);
-        for (Document doc : theCollection.aggregate(aggregation)) {
+                        RedactOption.DESCEND, RedactOption.PRUNE);
+        for (final Document doc : theCollection.aggregate(aggregation)) {
             System.out.println("No-ECI  : " + doc);
         }
 

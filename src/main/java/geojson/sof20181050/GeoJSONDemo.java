@@ -46,10 +46,10 @@ public class GeoJSONDemo {
                         p(12.13, 14.15), p(1.23, 4.56))));
 
         System.out
-                .println("MultiLineString: "
-                        + GeoJson.multiLineString(
-                                asList(p(1.23, 4.56), p(7.89, 10.11),
-                                        p(12.13, 14.15)),
+        .println("MultiLineString: "
+                + GeoJson.multiLineString(
+                        asList(p(1.23, 4.56), p(7.89, 10.11),
+                                p(12.13, 14.15)),
                                 asList(p(1.23, 4.56), p(7.89, 10.11),
                                         p(12.13, 14.15))));
 

@@ -60,15 +60,15 @@ public class AggregationCursorDemo {
      * @throws InterruptedException
      *             On a failure waiting for a future.
      */
-    public static void main(String[] args) throws IOException,
-            InterruptedException, ExecutionException {
+    public static void main(final String[] args) throws IOException,
+    InterruptedException, ExecutionException {
         // Before we start lets make sure there is not already a document.
         theCollection.delete(Find.ALL);
 
         // We need some data with lots of size to make sure we are over the 16MB
         // limit.
         final int inserted = 100_000;
-        DocumentBuilder builder = BuilderFactory.start();
+        final DocumentBuilder builder = BuilderFactory.start();
         for (int i = 0; i < inserted; i += 1) {
             builder.reset().add("_id", i);
             for (char c = 'a'; c <= 'z'; ++c) {
@@ -80,13 +80,14 @@ public class AggregationCursorDemo {
 
         // Now we can start retrieving the document. For that we will need to do
         // a find with a query on the id: { '_id' : 1 };
-        Aggregate.Builder aggregation = Aggregate.builder();
+        final Aggregate.Builder aggregation = Aggregate.builder();
         aggregation.useCursor();
         aggregation.match(Find.ALL);
 
         // First lets just extract the document with all of the fields.
         int count = 0;
-        MongoIterator<Document> iter = theCollection.aggregate(aggregation);
+        final MongoIterator<Document> iter = theCollection
+                .aggregate(aggregation);
         while (iter.hasNext()) {
             iter.next();
             count += 1;
@@ -94,7 +95,7 @@ public class AggregationCursorDemo {
 
         // ... and the results is:
         System.out
-                .println("Found " + count + " of " + inserted + " documents.");
+        .println("Found " + count + " of " + inserted + " documents.");
 
         // Always remember to close your client!
         client.close();

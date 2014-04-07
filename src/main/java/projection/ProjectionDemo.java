@@ -43,17 +43,17 @@ import com.allanbank.mongodb.builder.Find;
  */
 public class ProjectionDemo {
     /**
-     * A source of no so random values. Use a fixed seed to always get the same
-     * values for fields.
-     */
-    private final static Random random = new Random(123456789L);
-
-    /**
      * The handle to the MongoDB client. We assume MongoDB is running on your
      * machine on the default port of 27017.
      */
     private final static MongoClient client = MongoFactory
             .createClient("mongodb://localhost:27017/");
+
+    /**
+     * A source of no so random values. Use a fixed seed to always get the same
+     * values for fields.
+     */
+    private final static Random random = new Random(123456789L);
 
     /** The collection we will be using. */
     private final static MongoCollection theCollection = client.getDatabase(
@@ -67,14 +67,14 @@ public class ProjectionDemo {
      * @throws IOException
      *             On a failure closing the MongoCLient.
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(final String[] args) throws IOException {
         // Before we start lets make sure there is not already a document.
         theCollection.delete(where("_id").equals(1));
 
         // We need some data with lots of fields. Lets create a
         // document with the fields 'a' thru 'z'. We can use a random value for
         // each field since we really don't care what the fields are.
-        DocumentBuilder builder = BuilderFactory.start();
+        final DocumentBuilder builder = BuilderFactory.start();
         builder.add("_id", 1); // Well known id.
         for (char c = 'a'; c <= 'z'; ++c) {
             builder.add(String.valueOf(c), random.nextInt());
@@ -83,7 +83,7 @@ public class ProjectionDemo {
 
         // Now we can start retrieving the document. For that we will need to do
         // a find with a query on the id: { '_id' : 1 };
-        Find.Builder find = Find.builder();
+        final Find.Builder find = Find.builder();
         find.query(where("_id").equals(1));
 
         // First lets just extract the document with all of the fields.
@@ -139,7 +139,7 @@ public class ProjectionDemo {
         // it.
         //
         // Lets try again for 'a' and 'z' but this time without '_id'.
-        DocumentBuilder projection = BuilderFactory.start();
+        final DocumentBuilder projection = BuilderFactory.start();
         projection.add("_id", 0).add("a", 1).add("z", 1);
 
         find.projection(projection);
