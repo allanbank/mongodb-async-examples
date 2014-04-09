@@ -3,7 +3,7 @@ mongodb-async-examples
 
 ## Examples using the MongoDB Asynchronous Java Driver
 
-This project contains various examples that demonstrate the use of the [MongoDB Aysnchronous Driver](http://www.allanbank.com/mongodb-async-driver). 
+This project contains various examples that demonstrate the use of the [MongoDB Asynchronous Driver](http://www.allanbank.com/mongodb-async-driver). 
 
 All of the demos are self contained applications that can be quickly run to demonstrate various features of the driver. 
 
