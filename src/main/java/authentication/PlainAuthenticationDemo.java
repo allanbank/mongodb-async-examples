@@ -34,6 +34,10 @@ import com.allanbank.mongodb.builder.Find;
  * PlainAuthenticationDemo provides a simple example of authenticating using the
  * plain SASL for LDAP authentication. It can also be used for PAM
  * authentication.
+ * <p>
+ * Plain SASL authentication requires MongoDB Enterprise and the driver's
+ * extensions.
+ * </p>
  * 
  * @see <a
  *      href="http://docs.mongodb.org/master/tutorial/configure-ldap-sasl-authentication/">Configure
@@ -66,7 +70,7 @@ public class PlainAuthenticationDemo {
      *             On a failure waiting for a future.
      */
     public static void main(final String[] args) throws IOException,
-    InterruptedException, ExecutionException {
+            InterruptedException, ExecutionException {
         // Update the configuration to authenticate using plain user/name
         // passwords.
         final Credential.Builder credential = Credential.builder();

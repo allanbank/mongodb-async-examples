@@ -18,12 +18,11 @@ package authentication;
 
 import static com.allanbank.mongodb.builder.QueryBuilder.where;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.concurrent.ExecutionException;
 
-import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
 
 import com.allanbank.mongodb.Credential;
 import com.allanbank.mongodb.MongoClient;
@@ -33,17 +32,17 @@ import com.allanbank.mongodb.bson.Document;
 import com.allanbank.mongodb.bson.builder.BuilderFactory;
 import com.allanbank.mongodb.bson.element.ObjectId;
 import com.allanbank.mongodb.builder.Find;
-import com.allanbank.mongodb.extensions.tls.CipherName;
-import com.allanbank.mongodb.extensions.tls.TlsSocketFactory;
 
 /**
- * PlainAuthenticationDemo provides a simple example of authenticating using the
- * plain SASL for LDAP authentication. It can also be used for PAM
- * authentication.
+ * TlsDemo provides a simple example of authenticating using the x.509
+ * certificates including setting up a secure TLS connection.
+ * <p>
+ * x.509 authentication requires MongoDB Enterprise and the driver's extensions.
+ * </p>
  * 
  * @see <a
- *      href="http://docs.mongodb.org/master/tutorial/configure-ldap-sasl-authentication/">Configure
- *      LDAP SASL Authentication</a>
+ *      href="http://docs.mongodb.org/manual/tutorial/configure-x509/">Authenticate
+ *      with x.509 Certificate</a>
  * 
  * @copyright 2014, Allanbank Consulting, Inc., All Rights Reserved
  */
@@ -74,22 +73,34 @@ public class TlsDemo {
      *             On a failure setting up the TLS socket factory.
      */
     public static void main(final String[] args) throws IOException,
-    InterruptedException, ExecutionException, GeneralSecurityException {
+            InterruptedException, ExecutionException, GeneralSecurityException {
 
-        final File keyStore = new File("keystore");
-        final File trustStore = new File("trust");
+        // Use the vanilla SSL Socket factory for a basic SSL connection
+        // that is vulnerable to man-in-middle attacks.
+        client.getConfig().setSocketFactory(SSLSocketFactory.getDefault());
 
-        final TlsSocketFactory.Builder socketFactoryBuilder = TlsSocketFactory
-                .builder()
-                .ciphers(CipherName.AES_CIPHERS)
-                .hostnameVerifier(
-                        HttpsURLConnection.getDefaultHostnameVerifier())
-                        .keys(keyStore, "JKS", "changeme".toCharArray(),
-                                "changeit".toCharArray())
-                                .trustOnly(trustStore, "JKS", "changeme".toCharArray());
-
-        client.getConfig().setSocketFactory(socketFactoryBuilder.build());
-
+        /**
+         * The extensions have a socket factory builder with host name
+         * verification built in.
+         * 
+         * <pre>
+         * <code>
+         * final File keyStore = new File("keystore");
+         * final File trustStore = new File("trust");
+         * 
+         * final TlsSocketFactory.Builder socketFactoryBuilder = TlsSocketFactory
+         *         .builder()
+         *         .ciphers(CipherName.AES_CIPHERS)
+         *         .hostnameVerifier(
+         *                 HttpsURLConnection.getDefaultHostnameVerifier())
+         *         .keys(keyStore, "JKS", "changeme".toCharArray(),
+         *                 "changeit".toCharArray())
+         *         .trustOnly(trustStore, "JKS", "changeme".toCharArray());
+         * 
+         * client.getConfig().setSocketFactory(socketFactoryBuilder.build());
+         * </code>
+         * </pre>
+         */
         // Update the configuration to authenticate using X.509 client
         // certificates.
         final Credential.Builder credential = Credential.builder()

@@ -31,9 +31,12 @@ import com.allanbank.mongodb.bson.element.ObjectId;
 import com.allanbank.mongodb.builder.Find;
 
 /**
- * PlainAuthenticationDemo provides a simple example of authenticating using the
- * plain SASL for LDAP authentication. It can also be used for PAM
- * authentication.
+ * KerberosAuthenticationDemo provides a simple example of authenticating using
+ * the Kerberos.
+ * <p>
+ * Kerberos authentication requires MongoDB Enterprise and the driver's
+ * extensions.
+ * </p>
  * 
  * @see <a
  *      href="http://docs.mongodb.org/master/tutorial/configure-ldap-sasl-authentication/">Configure
@@ -66,7 +69,7 @@ public class KerberosAuthenticationDemo {
      *             On a failure waiting for a future.
      */
     public static void main(final String[] args) throws IOException,
-    InterruptedException, ExecutionException {
+            InterruptedException, ExecutionException {
 
         // Update the configuration to authenticate using kerberos.
         final Credential.Builder credential = Credential.builder();
