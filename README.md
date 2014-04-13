@@ -1,5 +1,6 @@
-mongodb-async-examples
-======================
+[![Build Status](https://travis-ci.org/allanbank/mongodb-async-examples.svg?branch=master)](https://travis-ci.org/allanbank/mongodb-async-examples)
+MongoDB Asynchronous Driver Demonstrations
+=============================================
 
 ## Examples using the MongoDB Asynchronous Java Driver
 
@@ -21,4 +22,4 @@ If you have questions we are happy to help. There are three main support channel
 * Email: Robert.J.Moore <at> allanbank.com
 
 
-[![Build Status](https://travis-ci.org/allanbank/mongodb-async-examples.svg?branch=master)](https://travis-ci.org/allanbank/mongodb-async-examples) - Note: Build will fail as the examples use a pre-release version of the driver.
+
