@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.allanbank</groupId>
 	<artifactId>mongodb-async-examples</artifactId>
-	<version>2.0.0-rc1</version>
+	<version>2.0.0</version>
 	<name>MongoDB Asynchronous Java Driver Examples</name>
 	<description>Examples using the MongoDB Asynchronous Java Driver</description>
 	<prerequisites>
@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>com.allanbank</groupId>
 			<artifactId>mongodb-async-driver</artifactId>
-			<version>2.0.0-rc1</version>
+			<version>2.0.0</version>
 		</dependency>
 		<!-- Requires a License - http://www.allanbank.com/mongodb-async-driver/license.html -->
 		<!-- <dependency> -->
