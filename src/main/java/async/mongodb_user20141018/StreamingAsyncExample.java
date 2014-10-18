@@ -71,31 +71,6 @@ public class StreamingAsyncExample {
             InterruptedException {
 
         // Clear the collection.
-        theCollection.deleteAsync(new DeleteCallback(), ALL);
-
-        // See the stageX... methods below.
-
-        // Wait for the demo to finish.
-        doneLatch.await();
-
-        // Always remember to close your client!
-        client.close();
-    }
-
-    /**
-     * Run the demo.
-     * 
-     * @param args
-     *            Command line arguments. Ignored.
-     * @throws IOException
-     *             On a failure closing the MongoClient.
-     * @throws InterruptedException
-     *             On a failure waiting for the demo to finish.
-     */
-    public static void mainWithLambdas(final String[] args) throws IOException,
-            InterruptedException {
-
-        // Clear the collection.
         theCollection.deleteAsync((deleteThrown, deleteCount) -> {
             if (deleteThrown != null) {
                 deleteThrown.printStackTrace();
@@ -138,6 +113,31 @@ public class StreamingAsyncExample {
                 }, ALL); // End Find/Query.
             }, write); // End Insert.
         } , ALL); // End Delete.
+
+        // Wait for the demo to finish.
+        doneLatch.await();
+
+        // Always remember to close your client!
+        client.close();
+    }
+
+    /**
+     * Run the demo.
+     *
+     * @param args
+     *            Command line arguments. Ignored.
+     * @throws IOException
+     *             On a failure closing the MongoClient.
+     * @throws InterruptedException
+     *             On a failure waiting for the demo to finish.
+     */
+    public static void mainPreLambdas(final String[] args) throws IOException,
+            InterruptedException {
+
+        // Clear the collection.
+        theCollection.deleteAsync(new DeleteCallback(), ALL);
+
+        // See the stageX... methods below to follow the processing flow.
 
         // Wait for the demo to finish.
         doneLatch.await();
