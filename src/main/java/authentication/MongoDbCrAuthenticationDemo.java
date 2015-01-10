@@ -19,7 +19,6 @@ package authentication;
 import static com.allanbank.mongodb.builder.QueryBuilder.where;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import com.allanbank.mongodb.Credential;
 import com.allanbank.mongodb.MongoClient;
@@ -59,14 +58,9 @@ public class MongoDbCrAuthenticationDemo {
      * @param args
      *            Command line arguments. Ignored.
      * @throws IOException
-     *             On a failure closing the MongoCLient.
-     * @throws ExecutionException
-     *             On a failure in a future.
-     * @throws InterruptedException
-     *             On a failure waiting for a future.
+     *             On a failure closing the MongoClient.
      */
-    public static void main(final String[] args) throws IOException,
-    InterruptedException, ExecutionException {
+    public static void main(final String[] args) throws IOException {
 
         // Update the configuration to authenticate using MongoDB user/name
         // passwords based challenge/response.

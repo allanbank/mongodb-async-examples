@@ -20,7 +20,6 @@ import static com.allanbank.mongodb.builder.QueryBuilder.where;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 
 import com.allanbank.mongodb.BatchedAsyncMongoCollection;
 import com.allanbank.mongodb.MongoClient;
@@ -69,13 +68,11 @@ public class BatchDemo {
      *            Command line arguments. Ignored.
      * @throws IOException
      *             On a failure closing the MongoCLient.
-     * @throws ExecutionException
-     *             On a failure in a future.
      * @throws InterruptedException
      *             On a failure waiting for a future.
      */
     public static void main(final String[] args) throws IOException,
-    InterruptedException, ExecutionException {
+            InterruptedException {
         // Before we start lets make sure there is not already a document.
         theCollection.delete(Find.ALL);
 
@@ -97,7 +94,8 @@ public class BatchDemo {
 
                 // Lambda is called once the batch completes.
                 batch.insertAsync((e, count) -> {
-                }, builder);
+                    // Nothing.
+                    }, builder);
             }
 
             // A query works.

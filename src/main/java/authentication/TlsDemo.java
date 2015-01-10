@@ -19,8 +19,6 @@ package authentication;
 import static com.allanbank.mongodb.builder.QueryBuilder.where;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.concurrent.ExecutionException;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -64,16 +62,9 @@ public class TlsDemo {
      * @param args
      *            Command line arguments. Ignored.
      * @throws IOException
-     *             On a failure closing the MongoCLient.
-     * @throws ExecutionException
-     *             On a failure in a future.
-     * @throws InterruptedException
-     *             On a failure waiting for a future.
-     * @throws GeneralSecurityException
-     *             On a failure setting up the TLS socket factory.
+     *             On a failure closing the MongoClient.
      */
-    public static void main(final String[] args) throws IOException,
-            InterruptedException, ExecutionException, GeneralSecurityException {
+    public static void main(final String[] args) throws IOException {
 
         // Use the vanilla SSL Socket factory for a basic SSL connection
         // that is vulnerable to man-in-middle attacks.

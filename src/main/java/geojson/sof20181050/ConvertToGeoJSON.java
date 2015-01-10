@@ -130,13 +130,10 @@ public class ConvertToGeoJSON {
      * 
      * @param args
      *            Command line arguments. Ignored.
-     * @throws InterruptedException
-     *             If waiting for the callback to complete is interrupted.
      * @throws IOException
      *             On a failure to close the client.
      */
-    public static void main(final String[] args) throws InterruptedException,
-    IOException {
+    public static void main(final String[] args) throws IOException {
         try {
             // We can perform this operation two way. Synchronously and via
             // streaming. We will provide an example of both. Change these
@@ -180,11 +177,8 @@ public class ConvertToGeoJSON {
      * asynchronous operations so the main thread knows when to terminate the
      * application.
      * </p>
-     * 
-     * @throws InterruptedException
-     *             If waiting for the callback to complete is interrupted.
      */
-    protected static void doAsynchronously() throws InterruptedException {
+    protected static void doAsynchronously() {
         // Execute the query to find all of the documents and stream
         // them to the callback. Have that callback update the document
         // asynchronously.
@@ -276,7 +270,7 @@ public class ConvertToGeoJSON {
                 new MongoClientURI(URI));
         final com.mongodb.DBCollection legacyCollection = legacyClient.getDB(
                 theCollection.getDatabaseName()).getCollection(
-                        theCollection.getName());
+                theCollection.getName());
         try {
             int count = 0;
             for (final DBObject doc : legacyCollection.find()) {
@@ -296,7 +290,7 @@ public class ConvertToGeoJSON {
                 final BasicDBObject update = new BasicDBObject("$set", set);
 
                 legacyCollection.update(query, update, /* upsert= */false,
-                        /* multi= */false, WriteConcern.ACKNOWLEDGED);
+                /* multi= */false, WriteConcern.ACKNOWLEDGED);
 
                 count += 1;
             }

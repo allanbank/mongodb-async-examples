@@ -17,7 +17,6 @@
 package aggregation;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import com.allanbank.mongodb.MongoClient;
 import com.allanbank.mongodb.MongoCollection;
@@ -54,14 +53,9 @@ public class AggregationCursorDemo {
      * @param args
      *            Command line arguments. Ignored.
      * @throws IOException
-     *             On a failure closing the MongoCLient.
-     * @throws ExecutionException
-     *             On a failure in a future.
-     * @throws InterruptedException
-     *             On a failure waiting for a future.
+     *             On a failure closing the MongoClient.
      */
-    public static void main(final String[] args) throws IOException,
-    InterruptedException, ExecutionException {
+    public static void main(final String[] args) throws IOException {
         // Before we start lets make sure there is not already a document.
         theCollection.delete(Find.ALL);
 
