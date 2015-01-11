@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+{
+	"_id" : ObjectId("54b2c3d47baf4b48f895afd7"),
+	"bar" : "1",
+	"subDoc" : [
+		"Just Text",
+		{
+			"attr" : "abc",
+			"_text" : [
+				"123"
+			]
+		}
+	]
+}
+-->
+<foo bar="1">
+	<subDoc>Just Text</subDoc>
+	<subDoc attr="abc">123</subDoc>
+</foo>
