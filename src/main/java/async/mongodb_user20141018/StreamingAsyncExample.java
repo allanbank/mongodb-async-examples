@@ -131,6 +131,7 @@ public class StreamingAsyncExample {
      * @throws InterruptedException
      *             On a failure waiting for the demo to finish.
      */
+    @SuppressWarnings("unused")
     public static void mainPreLambdas(final String[] args) throws IOException,
             InterruptedException {
 
@@ -154,6 +155,7 @@ public class StreamingAsyncExample {
      * @param result
      *            The result of the delete.
      */
+    @SuppressWarnings("unused")
     public static void stage1DeleteDone(final Throwable thrown,
             final Long result) {
 
@@ -181,6 +183,7 @@ public class StreamingAsyncExample {
      * @param result
      *            The result of the insert.
      */
+    @SuppressWarnings("unused")
     public static void stage2InsertDone(final Throwable thrown,
             final Long result) {
         if (thrown != null) {
@@ -226,6 +229,9 @@ public class StreamingAsyncExample {
      * @copyright 2014, Allanbank Consulting, Inc., All Rights Reserved
      */
     protected static final class DeleteCallback implements LambdaCallback<Long> {
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void accept(final Throwable thrown, final Long result) {
             stage1DeleteDone(thrown, result);
@@ -240,6 +246,9 @@ public class StreamingAsyncExample {
      */
     protected static final class FindCallback implements
             LambdaCallback<Document> {
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void accept(final Throwable thrown, final Document result) {
             stage3Result(thrown, result);
@@ -252,6 +261,9 @@ public class StreamingAsyncExample {
      * @copyright 2014, Allanbank Consulting, Inc., All Rights Reserved
      */
     protected static final class InsertCallback implements LambdaCallback<Long> {
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void accept(final Throwable thrown, final Long result) {
             stage2InsertDone(thrown, result);
